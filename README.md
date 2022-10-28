@@ -15,3 +15,4 @@ Usando métodos asíncronos en Spring boot.
 ## Referencias
 - [Formación Spring: Programación así­ncrona con Spring](https://www.albertcoronado.com/2016/04/25/formacion-spring-programacion-asincrona-con-spring/)
 - [Métodos Asíncronos (Spring Boot)](http://blog.ricardo.studio/2018/04/27/metodos-asincronos-springboot/)
+- [Creando métodos asíncronos en Spring Boot con @Async] (https://unpocodejava.com/2018/11/19/creando-metodos-asincronos-en-spring-boot-con-async/)
