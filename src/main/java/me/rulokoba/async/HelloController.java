@@ -1,6 +1,8 @@
 package me.rulokoba.async;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -27,12 +29,12 @@ public class HelloController {
 	
 	@RequestMapping("/delay")
 	public @ResponseBody String delay(@RequestParam(name = "time", defaultValue="1000") long time) throws InterruptedException {
-		ArrayList<String> results = new ArrayList<String>();
 //		String result = this.service.delay(time);
 //		String result2 = this.service.delay(time);
 //		return result + result2;
 		
-		int n = 4;
+		ArrayList<String> results = new ArrayList<String>();
+		int n = 30;
 		
 		for (int i=0; i<n; i++) {
 			String result = this.service.delay(time);
@@ -55,14 +57,15 @@ public class HelloController {
 //		Future<String> future3 = this.service.adelay(time);
 //		return future.get() + future2.get() + future3.get();
 		
+//		// Impide el async
 //		String message = this.service.adelay(time).get();
 //		String message2 = this.service.adelay(time).get();
 //		String message3 = this.service.adelay(time).get();
 //		return message + message2 + message3;
 	
-		ArrayList<Future> futures = new ArrayList<Future>();
+		ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
 		
-		int n = 128;
+		int n = 16;
 		
 		for (int i=0; i<n; i++) {
 			Future<String> future = this.service.adelay(time);
@@ -73,6 +76,58 @@ public class HelloController {
 		for (int i=0; i<n; i++) {
 			messages = messages + "<li>" + futures.get(i).get() + "</li>";
 		}
+		messages = messages + "</ol>";
+		
+		return messages;
+	}
+	
+	@RequestMapping("/adelay2")
+	public @ResponseBody String adelay2(@RequestParam(name = "time", defaultValue="1000") long time) throws InterruptedException, ExecutionException {
+//		Future<String> future = this.service.adelay2(time);
+//		Future<String> future2 = this.service.adelay2(time);
+//		Future<String> future3 = this.service.adelay2(time);
+//		return future.get() + future2.get() + future3.get();
+		
+		ArrayList<CompletableFuture<String>> futures = new ArrayList<CompletableFuture<String>>();
+		
+		int n = 16;
+		
+		for (int i=0; i<n; i++) {
+			CompletableFuture<String> future = this.service.adelay2(time);
+			futures.add(future);
+		}
+		
+		String messages = "<ol>";
+		for (int i=0; i<n; i++) {
+			messages = messages + "<li>" + futures.get(i).get() + "</li>";
+		}
+		messages = messages + "</ol>";
+		
+		return messages;
+	}
+	
+	@RequestMapping("/adelay2b")
+	public @ResponseBody String adelay2b(@RequestParam(name = "time", defaultValue="1000") long time) throws InterruptedException, ExecutionException {
+		LinkedList <CompletableFuture<String>> futures = new LinkedList<CompletableFuture<String>> ();
+		
+		
+		int n = 16;
+		int i = 0;
+		
+		String messages = "<ol>";
+		
+		do {
+			if (i < n) {
+				CompletableFuture<String> future = this.service.adelay2(time);
+				futures.add(future);
+			}
+			i++;
+			
+			if (futures.element().isDone()) {
+				messages = messages + "<li> (i: " + i + ")" + futures.remove().get() + "</li>";
+			}
+		} while (!futures.isEmpty());
+		
 		messages = messages + "</ol>";
 		
 		return messages;

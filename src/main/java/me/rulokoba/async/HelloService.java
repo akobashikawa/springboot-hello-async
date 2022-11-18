@@ -1,5 +1,6 @@
 package me.rulokoba.async;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import org.springframework.scheduling.annotation.Async;
@@ -30,5 +31,17 @@ public class HelloService {
 		String message = "adelay [" + random + "]: " + endTime + "-" + startTime + "=" + (endTime - startTime);
 		
 		return new AsyncResult<String>(message);
+	}
+	
+	@Async
+	public CompletableFuture<String> adelay2(long time) throws InterruptedException {
+		long startTime = System.currentTimeMillis();
+		Thread.sleep(time);
+		long endTime = System.currentTimeMillis();
+		
+		double random = Math.random();
+		String message = "adelay2 [" + random + "]: " + endTime + "-" + startTime + "=" + (endTime - startTime);
+		
+		return CompletableFuture.completedFuture(message);
 	}
 }
